@@ -73,6 +73,12 @@ class SceneFrame extends JFrame
 	{
 		@Override public void keyTyped(KeyEvent e)
 		{
+		  //need menu etc. so could put all of this in a while loop
+		  /* such as:
+		      while(inGame != true)
+		      
+		  */
+		
 			if (e.getKeyChar() == 'f') {
 				panel.updateScene();
 				panel.repaint();
