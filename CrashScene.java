@@ -39,8 +39,8 @@ public class CrashScene extends Scene
 			         //if(sceneItems.get(x) instanceof MovingSceneItem) {
 			             sceneItems.get(x).hide();
 			             sceneItems.get(y).setImage("images/fire.jpg", sceneItems.get(y).getWidth(), sceneItems.get(y).getHeight());
-			             if(sceneItems.get(x) instanceof Person) {
-			                 Person.numCrashed++;
+/* 		             if(sceneItems.get(x) instanceof Person) {
+		                 Person.numCrashed++;
 			             }
 			             
 			             if(sceneItems.get(y) instanceof Person) {
@@ -51,7 +51,7 @@ public class CrashScene extends Scene
 			                 sceneItems.get(y).setXStep(0);//sceneItems.get(y).setYStep(0);
 			                 sceneItems.get(y).setYStep(0);
 			             }
-			             
+*/			             
 			             
 			         /*}
 			         
@@ -69,8 +69,8 @@ public class CrashScene extends Scene
               
               sceneItems.get(x).update(dim.width, dim.height);
             }
-            System.out.println("num persons home: " + Person.numHome);
-            System.out.println("num persons crashed: "+ Person.numCrashed);
+//            System.out.println("num persons home: " + Person.numHome);
+//            System.out.println("num persons crashed: "+ Person.numCrashed);
 		}
 
 	}

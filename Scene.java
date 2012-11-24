@@ -54,8 +54,8 @@ public class Scene extends JPanel
 				int y = random.nextInt(dim.height);
 
 
-                if(type.equals("Asteroid")) {
-                    sceneItems.add(new Asteroid());
+               // if(type.equals("Asteroid")) {
+                 //   sceneItems.add(new Asteroid());
                 }
 				/*if (type.equals("Tree")) {
 					sceneItems.add(new Tree(x, y));
@@ -72,7 +72,7 @@ public class Scene extends JPanel
 					sceneItems.add(new Turtle(x, y));
 				}*/
 			}
-		}
+		
 		repaint();
 	}
 	
