@@ -110,6 +110,21 @@ public class Scene extends JPanel
 		repaint();
 	}
 
+
+	public void updateAsteroids()
+	{
+		Dimension dim = getSize();
+
+		synchronized(sceneItems)
+		{
+			for (SceneItem si : sceneItems) {
+				if (si.getClass() == Asteroid.class)
+				si.update(dim.width, dim.height);
+			}
+		}
+		repaint();
+	}
+
 	//  paingComponent() is the function used by the windowing system to draw the contents
 	//  of the window and is called by the system itself when some portion of the window
 	//  needs to be drawn or re-drawn
@@ -171,8 +186,8 @@ class Execute implements Runnable
 			while (s1.movingAsteroids()) 
 			{  
 				try{
-					s1.updateScene(); 
-					Thread.sleep(50); 
+					s1.updateAsteroids(); 
+					Thread.sleep(100); 
 				   }
 	 			catch(InterruptedException e)
 				{}	
