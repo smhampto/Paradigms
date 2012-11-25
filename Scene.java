@@ -6,19 +6,27 @@ import java.util.ArrayList;
 import java.awt.Dimension;
 import java.util.Random;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService; 
+
 public class Scene extends JPanel
 {
 	protected ArrayList<SceneItem> sceneItems;
 	private JLabel statusLabel;
 	private long randomSeed;
 	private Random random;
+    private Boolean asteroidsMoving;
+
+	ExecutorService threadExecutor = Executors.newCachedThreadPool(); 
+	
+	Execute asteroids; 
 	
 	public Scene(JLabel sl)
 	{
-		sceneItems = new ArrayList<SceneItem>();
-		statusLabel = sl;
-		random = new Random();
-		randomSeed = 100;
+		this.sceneItems = new ArrayList<SceneItem>();
+		this.statusLabel = sl;
+		this.random = new Random();
+		this.randomSeed = 100;
 	}
 	
 	public void setRandomSeed(long rs)
@@ -33,10 +41,14 @@ public class Scene extends JPanel
 		addSceneItems(1, "Ship");
 		//  [TODO: as you implement the classes listed below, uncomment out each line to test
 		addSceneItems(10, "Asteroid");
-		//addSceneItems(30, "Person");
-		//addSceneItems(2, "GrowingTree");
-		//addSceneItems(5, "Turtle");
+		repaint(); 
+
+		asteroidsMoving = true; 
 		
+		asteroids = new Execute("Asteroid", asteroidsMoving, statusLabel, this);
+		threadExecutor.execute(asteroids); 
+
+
 	}
 	
 	//  addSceneItems() adds an item of a given type to a random location on the
@@ -52,37 +64,26 @@ public class Scene extends JPanel
 			for (int i=0; i<num; i++) {
 				int x = random.nextInt(dim.width);
 				int y = random.nextInt(dim.height);
+				int s = random.nextInt(50);
+				int xs = random.nextInt(5);
+				int ys = random.nextInt(10);
+				
 
-
-               // if(type.equals("Asteroid")) {
-                 //   sceneItems.add(new Asteroid());
+                if(type.equals("Asteroid")) {
+                    sceneItems.add(new Asteroid(x, y, s, s, xs, ys));
                 }
-				/*if (type.equals("Tree")) {
-					sceneItems.add(new Tree(x, y));
-				} //  [TODO: as you implement the classes listed below, uncomment out each clause to test
-				else if (type.equals("House")) {
-					sceneItems.add(new House(x, y));
-				} else if (type.equals("Person")) {
-					int xs = random.nextInt(21) - 10;
-					int ys = random.nextInt(21) - 10;
-					sceneItems.add(new Person(x, y, xs, ys));
-				} else if (type.equals("GrowingTree")) {
-				    sceneItems.add(new GrowingTree(x, y, 1, 2));} 
-				  else if (type.equals("Turtle")) {
-					sceneItems.add(new Turtle(x, y));
-				}*/
+
+				else if(type.equals("Ship")) {
+                    sceneItems.add(new Ship(x, y, xs));
+                }
 			}
-		
-		repaint();
+		}
 	}
 	
 	//  reset() causes a new scene to be created from scratch
 	public void reset()
 	{
 		// [TODO: uncomment out the following few lines once the necessary functionality has been implemented for the Person class
-		//Person.setCount(0);
-		//Person.setNumHome(0);
-		//Person.setNumCrashed(0);
 		sceneItems.clear();
 		
 		if (randomSeed < 0) {
@@ -106,6 +107,7 @@ public class Scene extends JPanel
 				si.update(dim.width, dim.height);
 			}
 		}
+		repaint();
 	}
 
 	//  paingComponent() is the function used by the windowing system to draw the contents
@@ -133,4 +135,60 @@ public class Scene extends JPanel
 	{
 		statusLabel.setText(getStatusBarText());
 	}
+
+	public Boolean movingAsteroids()
+	{
+		return asteroidsMoving; 
+	}
+
 }
+
+
+class Execute implements Runnable 
+{
+	private String taskName;
+	private int sleepyTime; 
+	private boolean movement = false; 
+	private JLabel statusLabel;
+
+	
+	Scene s1;
+
+  
+    public Execute(String str, boolean b, JLabel sl, Scene s)
+	{
+	   taskName =  str;
+	   movement = b; 
+	   statusLabel = sl; 
+	   
+	   s1 = s; 
+	
+	}
+
+	public void run()
+	{
+
+			while (s1.movingAsteroids()) 
+			{  
+				try{
+					s1.updateScene(); 
+					Thread.sleep(50); 
+				   }
+	 			catch(InterruptedException e)
+				{}	
+
+		    }
+ 	  
+		  
+	}
+		
+		
+		
+		
+}
+	
+
+
+
+
+

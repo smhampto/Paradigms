@@ -41,13 +41,15 @@ class SceneFrame extends JFrame
     {
         setTitle("The Game");
         setLayout(new BorderLayout());
-        setBackground(Color.black);
+        
+		
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
         statusLabel = new JLabel("This is the menu");
         panel = new Scene(statusLabel);
+        panel.setBackground(Color.black);
         
         add(panel, BorderLayout.CENTER);
         
@@ -87,10 +89,6 @@ class SceneFrame extends JFrame
 			} else if (e.getKeyChar() == 'n') {
 				panel.setRandomSeed(-1);
 				panel.reset();
-//			} else if (e.getKeyChar() == 't') {
-//				panel.toggleTurtles();
-//			} else if (e.getKeyChar() == 'p') {
-//				panel.togglePeople();
 			}
 		}
 	}
