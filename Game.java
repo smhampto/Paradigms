@@ -41,16 +41,13 @@ class SceneFrame extends JFrame
     {
         setTitle("The Game");
         setLayout(new BorderLayout());
-        
-		
-        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
         statusLabel = new JLabel("This is the menu");
         panel = new Scene(statusLabel);
+
         panel.setBackground(Color.black);
-        
         add(panel, BorderLayout.CENTER);
         
         // create the status bar panel and shove it down the bottom of the frame
@@ -78,25 +75,38 @@ class SceneFrame extends JFrame
 		  //need menu etc. so could put all of this in a while loop
 		  /* such as:
 		      while(inGame != true)
+		      {
+		          if(e.getKeyChar() == 'i') {
+		          
+		          }
+		          
+		          if(e.getKeyChar() == 'm') {
+		          
+		          }
+		      
+		      }
 		      
 		  */
 		
 			if (e.getKeyChar() == 'f') {
 				panel.updateScene();
 				panel.repaint();
+			} 
+			else if(e.getKeyChar() == ' ') {
+			     panel.addSceneItems(1, "Bullet", -1);
 			} else if (e.getKeyChar() == 'r') {
 				panel.reset();
 			} else if (e.getKeyChar() == 'n') {
 				panel.setRandomSeed(-1);
 				panel.reset();
+
 			}
+
+			} 
+
 		}
 	}
-}
 
-    
-    
-    
-    
-    
-    
+
+
+

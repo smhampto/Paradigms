@@ -15,11 +15,15 @@ public class Scene extends JPanel
 	private JLabel statusLabel;
 	private long randomSeed;
 	private Random random;
+
     private Boolean asteroidsMoving;
 
 	ExecutorService threadExecutor = Executors.newCachedThreadPool(); 
 	
-	Execute asteroids; 
+	Execute asteroids, bullet; 
+
+	private int shipLocation;
+
 	
 	public Scene(JLabel sl)
 	{
@@ -38,23 +42,26 @@ public class Scene extends JPanel
 	//  Until a particular object type is implemented, you may want to comment its line out.
 	private void addScene()
 	{
-		addSceneItems(1, "Ship");
+		addSceneItems(1, "Ship", -1);
 		//  [TODO: as you implement the classes listed below, uncomment out each line to test
-		addSceneItems(10, "Asteroid");
+
+		addSceneItems(10, "Asteroid", -1);
 		repaint(); 
 
 		asteroidsMoving = true; 
-		
-		asteroids = new Execute("Asteroid", asteroidsMoving, statusLabel, this);
+
+		asteroids = new Execute(this);
 		threadExecutor.execute(asteroids); 
 
-
+		bullet = new Execute(this);
+		
+		
 	}
 	
 	//  addSceneItems() adds an item of a given type to a random location on the
 	//  screen.  Until each type of object is implemented, you may want to comment
 	//  out the sections which create some of the objects.
-	private void addSceneItems(int num, String type)
+	protected void addSceneItems(int num, String type, int prevIndex)
 	{
 		Dimension dim = getSize();
 		dim.setSize(dim.getWidth()-30, dim.getHeight()-30);
@@ -65,16 +72,26 @@ public class Scene extends JPanel
 				int x = random.nextInt(dim.width);
 				int y = random.nextInt(dim.height);
 				int s = random.nextInt(50);
-				int xs = random.nextInt(5);
-				int ys = random.nextInt(10);
+				int xs = random.nextInt(5) + 1;
+				int ys = random.nextInt(10) + 1;
 				
 
                 if(type.equals("Asteroid")) {
+
                     sceneItems.add(new Asteroid(x, y, s, s, xs, ys));
                 }
 
 				else if(type.equals("Ship")) {
-                    sceneItems.add(new Ship(x, y, xs));
+                    sceneItems.add(new Ship((dim.width/2), dim.height-160, 5));
+                    for (int z = 0; z < sceneItems.size(); z++) {
+                        if(sceneItems.get(z) instanceof Ship) {
+                            shipLocation = z;
+                        }
+                    }   
+                }
+                if(type.equals("Bullet")) {
+                    sceneItems.add(new Bullet(sceneItems.get(shipLocation).getXCoord() + 8 , sceneItems.get(shipLocation).getYCoord() - 15 ));
+					threadExecutor.execute(bullet); 
                 }
 			}
 		}
@@ -125,6 +142,21 @@ public class Scene extends JPanel
 		repaint();
 	}
 
+
+	public void updateBullet()
+	{
+		Dimension dim = getSize();
+
+		synchronized(sceneItems)
+		{
+			for (SceneItem si : sceneItems) {
+				if (si.getClass() == Bullet.class)
+				si.update(dim.width, dim.height);
+			}
+		}
+		repaint();
+	}
+
 	//  paingComponent() is the function used by the windowing system to draw the contents
 	//  of the window and is called by the system itself when some portion of the window
 	//  needs to be drawn or re-drawn
@@ -156,44 +188,55 @@ public class Scene extends JPanel
 		return asteroidsMoving; 
 	}
 
+	public Boolean movingBullet()
+	{
+
+		Dimension dim = getSize();
+			
+
+	 for (SceneItem si : sceneItems) 
+		if (si.getClass() == Bullet.class && si.getXCoord() <= dim.width && si.getYCoord() <= dim.height)
+         return true; 
+		 return false; 
+	}
+
 }
 
 
 class Execute implements Runnable 
 {
-	private String taskName;
-	private int sleepyTime; 
-	private boolean movement = false; 
-	private JLabel statusLabel;
-
-	
 	Scene s1;
 
-  
-    public Execute(String str, boolean b, JLabel sl, Scene s)
+    public Execute(Scene s)
 	{
-	   taskName =  str;
-	   movement = b; 
-	   statusLabel = sl; 
-	   
 	   s1 = s; 
-	
+
 	}
 
 	public void run()
 	{
 
-			while (s1.movingAsteroids()) 
+			while (s1.movingAsteroids() || s1.movingBullet()) 
 			{  
 				try{
-					s1.updateAsteroids(); 
-					Thread.sleep(100); 
+
+					if (s1.movingAsteroids()){
+					  s1.updateAsteroids(); 
+					  Thread.sleep(100); 
+					  }
+
+					if (s1.movingBullet())
+					  s1.updateBullet(); 
 				   }
+
 	 			catch(InterruptedException e)
 				{}	
 
 		    }
- 	  
+ 	   
+
+
+
 		  
 	}
 		

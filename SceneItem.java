@@ -70,6 +70,8 @@ public class SceneItem
 		return false;
 	}
 
+
+
 	public Image getImage() {
 		return img;
 	}

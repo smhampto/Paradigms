@@ -2,12 +2,14 @@ public class MovingSceneItem extends SceneItem
 {
 	private int xStep;
 	private int yStep;
+	private String type;
 	
 	
 	public MovingSceneItem(String path, int x, int y, int w, int h, int xs, int ys)
 	{
 	   super(path, x, y, w, h);
 
+        type = path;
         xStep = xs;
         yStep = ys;
 		
@@ -36,9 +38,9 @@ public class MovingSceneItem extends SceneItem
 	       xCoord = 0;
 	   } else if(xCoord < 0) {
 	       xCoord = widthPan - 30;
-	   } else if(yCoord < 0) {
+	   } else if(yCoord < 0 && type.equals("Asteroid")) {
 	       yCoord = heightPan - 30;
-	   } else if(yCoord > (heightPan - 30)) {
+	   } else if(yCoord > (heightPan - 30) && type.equals("Bullet")) {
 	       yCoord = 0;
 	   }    
 	   
