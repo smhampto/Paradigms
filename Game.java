@@ -37,6 +37,7 @@ class SceneFrame extends JFrame
 {
     JLabel statusLabel;
     Scene panel;
+	private boolean firstPlay = true; 
     
     public SceneFrame(int sleepDuration)
     {
@@ -99,11 +100,11 @@ class SceneFrame extends JFrame
 			} 
 			else if(e.getKeyChar() == ' ') {
 			     panel.addSceneItems(1, "Bullet", -1);
-			} else if (e.getKeyChar() == 'r') {
-				panel.reset();
-			} else if (e.getKeyChar() == 'n') {
+
+			} else if (e.getKeyChar() == 'n' && firstPlay) {
 				panel.setRandomSeed(-1);
 				panel.reset();
+				firstPlay = false; 
 
 			}
 
