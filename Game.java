@@ -18,6 +18,7 @@ import java.awt.Color;
 public class Game
 {
     JLabel statusLabel;
+
     
     public static void main(String args[])
     {

@@ -25,6 +25,7 @@ public class Scene extends JPanel
 
 	private int shipLocation;
 
+
 	
 	public Scene(JLabel sl)
 	{
@@ -71,8 +72,10 @@ public class Scene extends JPanel
 		{
 			for (int i=0; i<num; i++) {
 				int x = random.nextInt(dim.width);
-				int y = random.nextInt(dim.height);
+				int y = random.nextInt(dim.height) - dim.height;
 				int s = random.nextInt(50);
+				if (s < 20)
+					s = s + 20; 
 				int xs = random.nextInt(5) + 1;
 				int ys = random.nextInt(10) + 1;
 				
@@ -91,7 +94,7 @@ public class Scene extends JPanel
                     }   
                 }
                 if(type.equals("Bullet")) {
-                    sceneItems.add(new Bullet(sceneItems.get(shipLocation).getXCoord() + 8 , sceneItems.get(shipLocation).getYCoord() - 15 ));
+                    sceneItems.add(new Bullet(sceneItems.get(shipLocation).getXCoord() + 40 , sceneItems.get(shipLocation).getYCoord() - 25 ));
 					threadExecutor.execute(bullet); 
                 }
 			}
@@ -146,8 +149,11 @@ public class Scene extends JPanel
 		   
 		   for (SceneItem s2 : sceneItems)
 		   {
-				if (s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class)
-					i = 1; 
+				if (s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class && !s2.isHidden())
+				{
+					i = 1;
+					s2.hide();
+				} 
 			}
 
 		  if (i == 1)			
@@ -254,6 +260,8 @@ class Execute implements Runnable
 
 	 			catch(InterruptedException e)
 				{}	
+				catch (ConcurrentModificationException e)
+				{}
 
 		    }
  	   
