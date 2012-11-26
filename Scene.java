@@ -5,7 +5,8 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.awt.Dimension;
 import java.util.Random;
-
+import java.lang.Runnable;
+import java.util.*; 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService; 
 
@@ -130,16 +131,38 @@ public class Scene extends JPanel
 
 	public void updateAsteroids()
 	{
-		Dimension dim = getSize();
 
-		synchronized(sceneItems)
+	    Dimension dim = getSize();
+	
+		int [] s = new int[sceneItems.size()];  
+	   	int location = 0; 
+        
+		Iterator<SceneItem> itr = sceneItems.iterator();
+
+		while (itr.hasNext())
 		{
-			for (SceneItem si : sceneItems) {
-				if (si.getClass() == Asteroid.class)
-				si.update(dim.width, dim.height);
+		   int i = 0; 
+		   SceneItem s1 = itr.next(); 
+		   
+		   for (SceneItem s2 : sceneItems)
+		   {
+				if (s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class)
+					i = 1; 
 			}
+
+		  if (i == 1)			
+			itr.remove(); 	
+					  
 		}
-		repaint();
+		
+		
+		for (SceneItem s1 : sceneItems)
+					if (s1.getClass() == Asteroid.class)
+				{
+				    s1.update(dim.width, dim.height);	
+					 repaint();
+				}
+
 	}
 
 

@@ -14,7 +14,7 @@ public class CrashScene extends Scene
 	public void updateScene()
 	{
 	   Dimension dim = getSize();
-	   System.out.println("in crashScene");
+	   //System.out.println("in crashScene");
 
 		synchronized(sceneItems)
 		{
@@ -22,7 +22,7 @@ public class CrashScene extends Scene
 			  for(int y=0; y < sceneItems.size(); y++) {
 			    if(sceneItems.get(x).overlaps(sceneItems.get(y)) && x!=y && !sceneItems.get(x).isHidden() && !sceneItems.get(y).isHidden()) {
 			       if(((sceneItems.get(x) instanceof Asteroid) && (sceneItems.get(y) instanceof Bullet)) ||((sceneItems.get(y) instanceof Asteroid) && (sceneItems.get(x) instanceof Bullet))) {
-			         System.out.println("si should disappear");
+			         //System.out.println("si should disappear");
 			         sceneItems.get(y).hide();
 			         sceneItems.get(x).hide();
 			         // should update to create new asteroids
@@ -31,7 +31,7 @@ public class CrashScene extends Scene
 
 			       else if((sceneItems.get(y) instanceof Asteroid) && (sceneItems.get(x) instanceof Bullet)) {
 
-			         System.out.println("si2 should disappear");
+			         //System.out.println("si2 should disappear");
 			         sceneItems.get(x).hide();
 			         // should update to create new asteroids
 			         //sceneItems.get(x).setImage("images/smile.jpg", sceneItems.get(x).getWidth(), sceneItems.get(x).getHeight());
