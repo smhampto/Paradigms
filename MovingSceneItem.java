@@ -33,18 +33,18 @@ public class MovingSceneItem extends SceneItem
         
         xCoord += xStep;
         yCoord += yStep;
-	
-	   if(xCoord > (widthPan - 30)){
-	       xCoord = 0;
-	   } else if(xCoord < 0) {
-	       xCoord = widthPan - 30;
-	   } else if(yCoord < 0 && type.equals("Asteroid")) {
-	       yCoord = heightPan - 30;
-	   } else if(yCoord > (heightPan - 30) && type.equals("Bullet")) {
-	       yCoord = 0;
-	   }    
-	   
-	   
+  
 	}
+
+	public void moveShip(int width, char direction)
+	{
+
+		if (direction == 'l' && (xCoord + 100 + xStep) < width)
+				xCoord += xStep;
+		if (direction == 'j'&& (xCoord - xStep) > 0)
+				xCoord -= xStep;
+
+	}
+
 	
 }

@@ -131,6 +131,20 @@ public class Scene extends JPanel
 		repaint();
 	}
 
+	public void updateShip( char direction )
+	{
+		Dimension dim = getSize();
+
+		synchronized(sceneItems)
+		{
+			for (SceneItem si : sceneItems) {
+				if (si.getClass() == Ship.class)
+				((MovingSceneItem)si).moveShip(dim.width, direction);
+			}
+		}
+		repaint();
+	}
+
 
 	public void updateAsteroids()
 	{

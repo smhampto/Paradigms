@@ -89,8 +89,12 @@ class SceneFrame extends JFrame
 		      
 		  */
 		
-			if (e.getKeyChar() == 'f') {
-				panel.updateScene();
+			if (e.getKeyChar() == 'l') {
+				panel.updateShip('l');
+				panel.repaint();
+			} 
+			else if (e.getKeyChar() == 'j') {
+				panel.updateShip('j');
 				panel.repaint();
 			} 
 			else if(e.getKeyChar() == ' ') {
