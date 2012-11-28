@@ -286,7 +286,7 @@ class Execute implements Runnable
 	   s1 = s; 
 	}
 
-	public void run()
+	synchronized public void run()
 	{
 
 			while (s1.movingAsteroids() || s1.movingBullet()) 
@@ -304,9 +304,13 @@ class Execute implements Runnable
 				   }
 
 	 			catch(InterruptedException e)
-				{}	
+				{
+				    System.out.println("interrupted exception");
+				}	
 				catch (ConcurrentModificationException e)
-				{}
+				{
+				    System.out.println("concurrentModException");
+				}
 
 		    }
  	   

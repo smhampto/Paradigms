@@ -61,6 +61,7 @@ class SceneFrame extends JFrame
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
 		
+		
 		addKeyListener(new MyKeyListener());
 	}
 	
@@ -93,6 +94,14 @@ class SceneFrame extends JFrame
 			if (e.getKeyChar() == 'l') {
 				panel.updateShip('l');
 				panel.repaint();
+			}
+			else if(e.getKeyChar() == 'i') {
+			 HelpWindow helpy = new HelpWindow(SceneFrame.this);
+                helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+                helpy.setSize(300, 100);
+                helpy.setLocation(300, 300);
+                helpy.setVisible(true);
+			
 			} 
 			else if (e.getKeyChar() == 'j') {
 				panel.updateShip('j');
