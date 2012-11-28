@@ -16,6 +16,7 @@ public class Scene extends JPanel
 	private JLabel statusLabel;
 	private long randomSeed;
 	private Random random;
+	public int numAsteroids;
 
     private Boolean asteroidsMoving;
 
@@ -24,6 +25,7 @@ public class Scene extends JPanel
 	Execute asteroids, bullet; 
 
 	private int shipLocation;
+	public int level = 1; 
 
 
 	
@@ -42,12 +44,13 @@ public class Scene extends JPanel
 
 	//  addScene() determines the number of each type of item to add to the scene.
 	//  Until a particular object type is implemented, you may want to comment its line out.
-	private void addScene()
+	private void addScene(int numAsteroids)
 	{
 		addSceneItems(1, "Ship", -1);
 		//  [TODO: as you implement the classes listed below, uncomment out each line to test
 
-		addSceneItems(10, "Asteroid", -1);
+		addSceneItems(numAsteroids, "Asteroid", -1);
+		numAsteroids = 10;
 		repaint(); 
 
 		asteroidsMoving = true; 
@@ -55,7 +58,7 @@ public class Scene extends JPanel
 		asteroids = new Execute(this);
 		threadExecutor.execute(asteroids); 
 
-		bullet = new Execute(this);
+
 		
 		
 	}
@@ -77,16 +80,16 @@ public class Scene extends JPanel
 				if (s < 20)
 					s = s + 20; 
 				int xs = random.nextInt(5) + 1;
-				int ys = random.nextInt(10) + 1;
+				int ys = random.nextInt(10) + 3;
 				
 
                 if(type.equals("Asteroid")) {
 
-                    sceneItems.add(new Asteroid(x, y, s, s, xs, ys));
+                    sceneItems.add(new Asteroid(7/ 8 *x, y, s, s, xs, ys));
                 }
 
 				else if(type.equals("Ship")) {
-                    sceneItems.add(new Ship((dim.width/2), dim.height-160, 5));
+                    sceneItems.add(new Ship((dim.width/2), dim.height-160, 15));
                     for (int z = 0; z < sceneItems.size(); z++) {
                         if(sceneItems.get(z) instanceof Ship) {
                             shipLocation = z;
@@ -95,7 +98,6 @@ public class Scene extends JPanel
                 }
                 if(type.equals("Bullet")) {
                     sceneItems.add(new Bullet(sceneItems.get(shipLocation).getXCoord() + 40 , sceneItems.get(shipLocation).getYCoord() - 25 ));
-					threadExecutor.execute(bullet); 
                 }
 			}
 		}
@@ -112,7 +114,7 @@ public class Scene extends JPanel
 		}
 		random.setSeed(randomSeed);
 
-		addScene();
+		addScene(10);
 		updateStatusBar();
 	}
 	
@@ -129,6 +131,11 @@ public class Scene extends JPanel
 			}
 		}
 		repaint();
+
+
+	
+
+
 	}
 
 	public void updateShip( char direction )
@@ -170,18 +177,28 @@ public class Scene extends JPanel
 				} 
 			}
 
-		  if (i == 1)			
-			itr.remove(); 	
+		  if (i == 1){			
+			itr.remove(); 				
+			numAsteroids--;
+			}
 					  
 		}
 		
 		
 		for (SceneItem s1 : sceneItems)
-					if (s1.getClass() == Asteroid.class)
+			if (s1.getClass() == Asteroid.class)
 				{
 				    s1.update(dim.width, dim.height);	
 					 repaint();
+
 				}
+
+
+		for (SceneItem s1 : sceneItems)
+					if (s1.getClass() == Asteroid.class && (s1.getXCoord() > dim.width || s1.getYCoord() > dim.height))
+						numAsteroids--; 
+
+
 
 	}
 
@@ -195,8 +212,13 @@ public class Scene extends JPanel
 			for (SceneItem si : sceneItems) {
 				if (si.getClass() == Bullet.class)
 				si.update(dim.width, dim.height);
+
+				if (si.getXCoord() < 0 || si.getYCoord() < 0 && si.getClass() == Bullet.class)
+						si.hide(); 
 			}
 		}
+
+			
 		repaint();
 	}
 
@@ -238,9 +260,18 @@ public class Scene extends JPanel
 			
 
 	 for (SceneItem si : sceneItems) 
-		if (si.getClass() == Bullet.class && si.getXCoord() <= dim.width && si.getYCoord() <= dim.height)
+		if (si.getClass() == Bullet.class && si.getXCoord() <= dim.width && si.getYCoord() <= dim.height
+				 && si.getXCoord() > 0 && si.getYCoord() > 0 && !si.isHidden())
          return true; 
 		 return false; 
+	}
+
+	public void nextLevel()
+	{
+		addSceneItems(10 * level, "Asteroid", -1);
+		numAsteroids = 10 * level;
+		level++; 
+
 	}
 
 }
@@ -253,7 +284,6 @@ class Execute implements Runnable
     public Execute(Scene s)
 	{
 	   s1 = s; 
-
 	}
 
 	public void run()
@@ -268,8 +298,9 @@ class Execute implements Runnable
 					  Thread.sleep(100); 
 					  }
 
-					if (s1.movingBullet())
+					if (s1.movingBullet() )
 					  s1.updateBullet(); 
+
 				   }
 
 	 			catch(InterruptedException e)
