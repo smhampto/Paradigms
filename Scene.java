@@ -16,7 +16,6 @@ public class Scene extends JPanel
 	private JLabel statusLabel;
 	private long randomSeed;
 	private Random random;
-	public int numAsteroids;
 
     private Boolean asteroidsMoving;
 
@@ -25,7 +24,8 @@ public class Scene extends JPanel
 	Execute asteroids, bullet; 
 
 	private int shipLocation;
-	public int level = 1; 
+	public int level = 1; 	
+	public int numAsteroids = 10;
 
 
 	
@@ -44,23 +44,23 @@ public class Scene extends JPanel
 
 	//  addScene() determines the number of each type of item to add to the scene.
 	//  Until a particular object type is implemented, you may want to comment its line out.
-	private void addScene(int numAsteroids)
+	private void addScene(int numAsteroid)
 	{
 		addSceneItems(1, "Ship", -1);
 		//  [TODO: as you implement the classes listed below, uncomment out each line to test
 
 		addSceneItems(numAsteroids, "Asteroid", -1);
-		numAsteroids = 10;
+		//numAsteroids = 10;
 		repaint(); 
 
 		asteroidsMoving = true; 
 
-		asteroids = new Execute(this);
+		asteroids = new Execute(this, 'a');
 		threadExecutor.execute(asteroids); 
 
+			 
 
-		
-		
+	
 	}
 	
 	//  addSceneItems() adds an item of a given type to a random location on the
@@ -98,10 +98,37 @@ public class Scene extends JPanel
                 }
                 if(type.equals("Bullet")) {
                     sceneItems.add(new Bullet(sceneItems.get(shipLocation).getXCoord() + 40 , sceneItems.get(shipLocation).getYCoord() - 25 ));
-                }
+
+					}
 			}
 		}
 	}
+
+
+	protected void addMoreAsteroids(int num)
+	{
+		Dimension dim = getSize();
+		dim.setSize(dim.getWidth()-30, dim.getHeight()-30);
+
+		synchronized(sceneItems)
+		{
+			for (int i=0; i<num; i++) {
+				int x = random.nextInt(dim.width);
+				int y = random.nextInt(dim.height) - dim.height;
+				int s = random.nextInt(50);
+				if (s < 20)
+					s = s + 20; 
+				int xs = random.nextInt(5) + 1;
+				int ys = random.nextInt(10) + 3;
+
+                    sceneItems.add(new Asteroid(7/ 8 *x, y, s, s, xs, ys));
+
+			}
+		}
+	}
+
+
+
 	
 	//  reset() causes a new scene to be created from scratch
 	public void reset()
@@ -170,56 +197,58 @@ public class Scene extends JPanel
 		   
 		   for (SceneItem s2 : sceneItems)
 		   {
-				if (s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class && !s2.isHidden())
+				if ((s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class && !s2.isHidden()) )
 				{
 					i = 1;
 					s2.hide();
 				} 
+
 			}
+
+		  if (s1.getClass() == Asteroid.class && (s1.getXCoord() > dim.width || s1.getYCoord() > dim.height))
+				   i = 1; 
 
 		  if (i == 1){			
 			itr.remove(); 				
 			numAsteroids--;
 			}
-					  
+
+		  
 		}
 		
+		System.out.println(numAsteroids); 
 		
 		for (SceneItem s1 : sceneItems)
 			if (s1.getClass() == Asteroid.class)
 				{
 				    s1.update(dim.width, dim.height);	
-					 repaint();
 
 				}
 
-
-		for (SceneItem s1 : sceneItems)
-					if (s1.getClass() == Asteroid.class && (s1.getXCoord() > dim.width || s1.getYCoord() > dim.height))
-						numAsteroids--; 
-
-
+					 repaint();
 
 	}
 
 
 	public void updateBullet()
 	{
-		Dimension dim = getSize();
+	    Dimension dim = getSize();
+	
 
-		synchronized(sceneItems)
-		{
-			for (SceneItem si : sceneItems) {
-				if (si.getClass() == Bullet.class)
-				si.update(dim.width, dim.height);
+		for (SceneItem s1 : sceneItems)
+			if (s1.getClass() == Bullet.class)
+				{
+				    s1.update(dim.width, dim.height);	
+					 repaint();
 
-				if (si.getXCoord() < 0 || si.getYCoord() < 0 && si.getClass() == Bullet.class)
-						si.hide(); 
-			}
-		}
+				}
 
-			
-		repaint();
+		for (SceneItem si : sceneItems)
+			if ((si.getXCoord() < 0 || si.getYCoord() < 0 ) && si.getClass() == Bullet.class && !si.isHidden())
+				si.hide(); 
+
+
+		
 	}
 
 	//  paingComponent() is the function used by the windowing system to draw the contents
@@ -268,8 +297,8 @@ public class Scene extends JPanel
 
 	public void nextLevel()
 	{
-		addSceneItems(10 * level, "Asteroid", -1);
-		numAsteroids = 10 * level;
+		numAsteroids = 10 + 5 * level;
+		addMoreAsteroids(numAsteroids);
 		level++; 
 
 	}
@@ -280,10 +309,12 @@ public class Scene extends JPanel
 class Execute implements Runnable 
 {
 	Scene s1;
+	char threadType; 
 
-    public Execute(Scene s)
+    public Execute(Scene s, char thread)
 	{
 	   s1 = s; 
+	   threadType = thread; 
 	}
 
 	synchronized public void run()
@@ -293,15 +324,21 @@ class Execute implements Runnable
 			{  
 				try{
 
-					if (s1.movingAsteroids()){
+					synchronized(s1){
+
+					if (s1.movingAsteroids() && threadType == 'a'){
 					  s1.updateAsteroids(); 
 					  Thread.sleep(100); 
 					  }
 
-					if (s1.movingBullet() )
+					if (s1.movingBullet())	{
 					  s1.updateBullet(); 
-
+					  Thread.sleep(5); 
+					}	
 				   }
+
+
+				}
 
 	 			catch(InterruptedException e)
 				{

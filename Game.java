@@ -49,6 +49,7 @@ class SceneFrame extends JFrame
         statusLabel = new JLabel("This is the menu");
         panel = new Scene(statusLabel);
 
+
         panel.setBackground(Color.black);
         add(panel, BorderLayout.CENTER);
         
@@ -100,6 +101,12 @@ class SceneFrame extends JFrame
 				panel.reset();
 				firstPlay = false; 
 
+			}
+
+			  else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0){
+				panel.level = panel.level + 1; 
+				panel.numAsteroids = 10 * panel.level; 
+				panel.reset();
 			}
 
 			} 
