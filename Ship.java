@@ -1,7 +1,7 @@
 public class Ship extends MovingSceneItem
 {
-	public Ship(int xCoord, int yCoord, int xSpeed)
+	public Ship(String p, int xCoord, int yCoord, int w, int h, int xSpeed, int ys)
 	{
-		super("ship3.jpg", xCoord, yCoord, 100, 100, xSpeed, 0);
+		super(p, xCoord, yCoord, w, h, xSpeed, ys);
 	}
 }

@@ -11,22 +11,24 @@ public class SceneItem
 	protected int yCoord;
 	protected int width;
 	protected int height;
+	protected String path;
 
-	public SceneItem(String path, int x, int y, int w, int h) {
+	public SceneItem(String p, int x, int y, int w, int h) {
 		xCoord = x;
 		yCoord = y;
-		setImage(path, w, h);
+		path = p;
+		setImage(p, w, h);
 	}
 	
-	public void setImage(String path, int w, int h)
+	public void setImage(String p, int w, int h)
 	{
 		width = w;
 		height = h;
 		try {
-			img = ImageIO.read(new File(path));
+			img = ImageIO.read(new File(p));
 		}
 		catch (java.io.IOException e) {
-			System.out.println("Can't load image file '" + path + "'");
+			System.out.println("Can't load image file '" + p + "'");
 		}
 	}
 
@@ -95,6 +97,15 @@ public class SceneItem
 	public void setYStep(int ys) {
 
 	} 
+	
+	//overide in movingsceneitem
+    public int getXStep() {
+        return 0;
+	}
+	//override in movingscenitem
+	public int getYStep() {
+        return 0;
+	} 
 
 	public int getXCoord() {
 		return xCoord;
@@ -103,6 +114,22 @@ public class SceneItem
 	public int getYCoord() {
 		return yCoord;
 	}
+	
+	public void setXCoord(int x) {
+		xCoord = x;
+	}
+	
+	public void setYCoord(int y) {
+		yCoord = y;
+	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public void setPath(String p) {
+		path = p;
+	}
 
 	public int getWidth() {
 		return width;
@@ -110,5 +137,13 @@ public class SceneItem
 	
 	public int getHeight() {
 		return height;
+	}
+	
+	public void setWidth(int w) {
+		width = w;
+	}
+	
+	public void setHeight(int h) {
+		height = h;
 	}	
 }

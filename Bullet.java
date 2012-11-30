@@ -1,7 +1,7 @@
 public class Bullet extends MovingSceneItem
 {
-	public Bullet(int x, int y)
+	public Bullet(String p, int x, int y, int w, int h, int xs, int ys)
 	{
-		super("bullet1.jpg", x, y, 15, 15, 0, -50);
+		super(p, x, y, w, h, xs, ys);
 	}
 }

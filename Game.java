@@ -1,3 +1,7 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,29 +19,37 @@ import java.awt.Toolkit;
 
 import java.awt.Color;
 
+
 public class Game
 {
     JLabel statusLabel;
-
     
     public static void main(String args[])
     {
         int sleepDuration = 100;
-        if (args.length >0)
+        if(args.length >0)
         {
             sleepDuration = Integer.parseInt(args[0]);
         }
         SceneFrame frame = new SceneFrame(sleepDuration);
         frame.setVisible(true);
         frame.createScene();
+    
     }
 }
 
-class SceneFrame extends JFrame
-{
+class SceneFrame  extends JFrame {
+    
     JLabel statusLabel;
     Scene panel;
-	private boolean firstPlay = true; 
+    JMenuBar menubar;
+    JMenu help;
+    JMenu newGame;
+    JMenuItem startNewGame;
+    JMenuItem loadGame;
+    JMenuItem saveGame;
+    JMenuItem instructions;
+    private boolean firstPlay = true;
     
     public SceneFrame(int sleepDuration)
     {
@@ -48,13 +60,41 @@ class SceneFrame extends JFrame
         
         statusLabel = new JLabel("This is the menu");
         panel = new Scene(statusLabel);
+        
+        menubar = new JMenuBar();
+        add(menubar);
+        newGame = new JMenu("Game");
+        menubar.add(newGame);
+        startNewGame = new JMenuItem("New Game");
+        newGame.add(startNewGame);
+        loadGame = new JMenuItem("Load Game");
+        newGame.add(loadGame);
+        saveGame = new JMenuItem("Save Game");
+        newGame.add(saveGame);
+        
+        help = new JMenu("Help");
+        menubar.add(help);
+        instructions = new JMenuItem("Instructions");
+        help.add(instructions);
+        setJMenuBar(menubar);
+                
+        event e = new event();
+        instructions.addActionListener(e);
+        
+        newGames n = new newGames();
+        startNewGame.addActionListener(n);
+        
+        loadGames l = new loadGames();
+        loadGame.addActionListener(l);
+        
+        saveGames s = new saveGames();
+        saveGame.addActionListener(s);
 
-
+        
         panel.setBackground(Color.black);
         add(panel, BorderLayout.CENTER);
         
-        // create the status bar panel and shove it down the bottom of the frame
-		JPanel statusPanel = new JPanel();
+        JPanel statusPanel = new JPanel();
 		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		add(statusPanel, BorderLayout.SOUTH);
 		statusPanel.setPreferredSize(new Dimension(getWidth(), 20));
@@ -64,22 +104,82 @@ class SceneFrame extends JFrame
 		
 		
 		addKeyListener(new MyKeyListener());
-	}
-	
-	public void createScene()
+    
+    }
+    
+    public void createScene()
 	{
         KeyEvent ke = new KeyEvent(this, KeyEvent.KEY_TYPED, 0, 0, 0, 'r');
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(ke);
     }
     
-    private class MyKeyListener extends KeyAdapter
+    public class event implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+        
+        System.out.println("instruction");
+            
+            HelpWindow helpy = new HelpWindow(SceneFrame.this);
+            helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+            helpy.setSize(300, 100);
+            helpy.setLocation(300, 300);
+            helpy.setVisible(true);
+
+        
+        }
+        
+    }
+
+
+    public class newGames implements ActionListener {
+        public void actionPerformed(ActionEvent n) {
+        
+            System.out.println("start");    
+            newGameWindow helpy = new newGameWindow(SceneFrame.this);
+            helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+            helpy.setSize(300, 100);
+            helpy.setLocation(300, 300);
+            helpy.setVisible(true);
+
+        
+        }
+        
+    }
+
+    public class loadGames implements ActionListener {
+        public void actionPerformed(ActionEvent l) {
+            panel.loadGame();
+            panel.addLoadScene();
+        }   
+    }
+    
+    public class saveGames implements ActionListener {
+        public void actionPerformed(ActionEvent s) {
+            
+            panel.saveGame();
+            //panel.addSaveScene();        
+        }   
+    }
+
+    
+   private class MyKeyListener extends KeyAdapter
 	{
+	
 		@Override public void keyTyped(KeyEvent e)
 		{
-		
-			if (e.getKeyChar() == 'l') {
+
+            if (e.getKeyChar() == 'i') {
+				HelpWindow helpy = new HelpWindow(SceneFrame.this);
+                helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+                helpy.setSize(300, 100);
+                helpy.setLocation(300, 300);
+                helpy.setVisible(true);
+			} 
+			else if (e.getKeyChar() == 'l') {
 				panel.updateShip('l');
 				panel.repaint();
+			}
+			else if(e.getKeyChar() == 'p') {
+			     panel.pauseGame();
 			}
 			else if(e.getKeyChar() == 'i') {
 			 HelpWindow helpy = new HelpWindow(SceneFrame.this);
@@ -103,17 +203,21 @@ class SceneFrame extends JFrame
 
 			}
 
-			  else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0){
-				panel.level = panel.level + 1; 
-				panel.numAsteroids = 10 * panel.level; 
-				panel.reset();
-			}
 
-			} 
+        
+        }
+        
+    }
+    
+    public static void main(String args[]) {
+        
+        MainWindow helpy = new MainWindow();
+        helpy.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        helpy.setSize(300, 100);
+        helpy.setVisible(true);
+        helpy.setTitle("Main Window");
+    
+    }
 
-		}
-	}
 
-
-
-
+}
