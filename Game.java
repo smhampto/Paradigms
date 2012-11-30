@@ -133,13 +133,12 @@ class SceneFrame  extends JFrame {
     public class newGames implements ActionListener {
         public void actionPerformed(ActionEvent n) {
         
-            System.out.println("start");    
-            newGameWindow helpy = new newGameWindow(SceneFrame.this);
-            helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
-            helpy.setSize(300, 100);
-            helpy.setLocation(300, 300);
-            helpy.setVisible(true);
-
+		while(firstPlay) {
+            panel.setRandomSeed(-1);
+			panel.numAsteroids = 10;
+			panel.reset();
+			firstPlay = false;
+		}
         
         }
         
@@ -181,6 +180,9 @@ class SceneFrame  extends JFrame {
 			else if(e.getKeyChar() == 'p') {
 			     panel.pauseGame();
 			}
+			else if(e.getKeyChar() == 'r') {
+				panel.resumeGame();
+			}
 			else if(e.getKeyChar() == 'i') {
 			 HelpWindow helpy = new HelpWindow(SceneFrame.this);
                 helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
@@ -196,14 +198,17 @@ class SceneFrame  extends JFrame {
 			else if(e.getKeyChar() == ' ') {
 			     panel.addSceneItems(1, "Bullet", -1);
 
-			} else if (e.getKeyChar() == 'n' && firstPlay) {
+		} /*else if (e.getKeyChar() == 'n' && firstPlay) {
 				panel.setRandomSeed(-1);
 				panel.reset();
 				firstPlay = false; 
+			}*/
 
+			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0){
+				panel.numAsteroids = 10 + 5 *panel.level;
+				panel.level = panel.level + 1;
+				panel.reset();
 			}
-
-
         
         }
         

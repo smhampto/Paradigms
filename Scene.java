@@ -26,6 +26,7 @@ public class Scene extends JPanel
 	private long randomSeed;
 	private Random random;
     private Boolean asteroidsMoving;
+	private Boolean bulletsMoving = true; 
     
     //new
     private Scanner input;
@@ -41,16 +42,16 @@ public class Scene extends JPanel
     private int tempYS;
     private String temp;
     private String spaceTemp;
+
+
+	private int shipLocation;
+public int level = 1;
+public int numAsteroids = 10;
     
     //end new
 
 	ExecutorService threadExecutor = Executors.newCachedThreadPool(); 
-	
-	Execute asteroids, bullet; 
-
-	private int shipLocation;
-
-
+	Execute asteroids, asteroid, Asteroid;
 	
 	public Scene(JLabel sl)
 	{
@@ -67,6 +68,15 @@ public class Scene extends JPanel
 	
 	public void pauseGame() {
 	   asteroidsMoving = false;
+	   bulletsMoving = false; 
+	}
+
+	public void resumeGame() {
+		asteroidsMoving = true;
+		bulletsMoving = true;
+		
+		Asteroid = new Execute(this, 'a');
+		threadExecutor.execute(Asteroid);
 	}
 
     //new to load and save
@@ -75,6 +85,13 @@ public class Scene extends JPanel
         openLoadFile();
         readFile();
         closeLoadFile();
+
+
+		asteroidsMoving = true;
+
+		asteroid = new Execute(this, 'a');
+		threadExecutor.execute(asteroid); 
+
     
     }
     
@@ -118,15 +135,17 @@ public class Scene extends JPanel
         {
         }
         
+		out.println(numAsteroids);
         for (SceneItem si : sceneItems) {
             out.print(si.isHidden() + "\n" + si.getPath() + "\n" + si.getXCoord() + "\n" + si.getYCoord() + "\n" + si.getWidth() + "\n" + si.getHeight() + "\n" + si.getXStep() + "\n" + si.getYStep() + "\n\n");
         }
     }
     
     public void readFile() {
-        System.out.println("in readFile");
+        
         int x=0;
         
+		numAsteroids = input.nextInt();
         while(input.hasNext())
         {   
                
@@ -143,10 +162,9 @@ public class Scene extends JPanel
                 {
                     tempXS = Integer.parseInt(spaceTemp);
                     tempYS = input.nextInt();
-                    System.out.println(tempPath + " " + tempX + " " + tempY + " " + tempW + " "+ tempH + " " + tempXS + " " + tempYS);
+          
                     if(tempPath.equals("ship1.jpeg") || tempPath.equals("ship2.jpeg") || tempPath.equals("ship3.jpg"))
                     {
-                        System.out.println("in ship");
                         sceneItems.add(new Ship(tempPath, tempX, tempY, tempW, tempH, tempXS, tempYS));
                     }
                     else if(tempPath.equals("asteroid1.jpeg") || tempPath.equals("asteroid2.jpeg") || tempPath.equals("asteroid3.jpeg"))
@@ -155,7 +173,6 @@ public class Scene extends JPanel
                     }
                     else if(tempPath.equals("bullet1.jpg"))
                     {
-                        System.out.println("in bullet");
                         sceneItems.add(new Bullet(tempPath, tempX, tempY, tempW, tempH, tempXS, tempYS));
                     }
 
@@ -171,7 +188,6 @@ public class Scene extends JPanel
             
            // }
         }
-        System.out.println("end read file");
     }
     
     public void closeLoadFile() {
@@ -188,26 +204,13 @@ public class Scene extends JPanel
     {
         repaint(); 
 
-		asteroidsMoving = true; 
 
-		asteroids = new Execute(this);
-		threadExecutor.execute(asteroids); 
 
-		bullet = new Execute(this);
 
     
     }
     
-    /*protected void addSaveScene()
-    {
-        repaint();
-        asteroidsMoving = true;
-        
-        asteroids = new Execute(this);
-        threadExecutor.execute(asteroids);
-        bullet = new Execute(this);
-    }*/
-    //end new to load
+
     
 
 	//  addScene() determines the number of each type of item to add to the scene.
@@ -217,16 +220,13 @@ public class Scene extends JPanel
 		addSceneItems(1, "Ship", -1);
 		//  [TODO: as you implement the classes listed below, uncomment out each line to test
 
-		addSceneItems(10, "Asteroid", -1);
-		System.out.println(sceneItems.get(0));
+		addSceneItems(numAsteroids, "Asteroid", -1);
 		repaint(); 
 
-		asteroidsMoving = true; 
+			asteroidsMoving = true;
 
-		asteroids = new Execute(this);
+		asteroids = new Execute(this, 'a');
 		threadExecutor.execute(asteroids); 
-
-		bullet = new Execute(this);
 		
 		
 	}
@@ -268,7 +268,7 @@ public class Scene extends JPanel
                 }
                 if(type.equals("Bullet")) {
                     sceneItems.add(new Bullet("bullet1.jpg", sceneItems.get(shipLocation).getXCoord() + 40 , sceneItems.get(shipLocation).getYCoord() - 25, 15, 15, 0, -10 ));
-					threadExecutor.execute(bullet); 
+
                 }
 			}
 		}
@@ -322,42 +322,52 @@ public class Scene extends JPanel
 	public void updateAsteroids()
 	{
 
-	    Dimension dim = getSize();
-	
-		int [] s = new int[sceneItems.size()];  
-	   	int location = 0; 
+		Dimension dim = getSize();
+
+		int [] s = new int[sceneItems.size()];
+		int location = 0;
         
 		Iterator<SceneItem> itr = sceneItems.iterator();
 
-		while (itr.hasNext())
+		synchronized(sceneItems)
 		{
-		   int i = 0; 
-		   SceneItem s1 = itr.next(); 
-		   
-		   for (SceneItem s2 : sceneItems)
-		   {
-				if (s1.overlaps(s2)  && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class && !s2.isHidden())
+			for (SceneItem s1 : sceneItems) 
+			{
+				int i = 0;
+				
+
+		for (SceneItem s2 : sceneItems)
+			{
+				if ( s1.overlaps(s2) && s1.getClass() == Asteroid.class && s2.getClass() == Bullet.class && !s2.isHidden() && !s1.isHidden())
 				{
 					i = 1;
 					s2.hide();
-				} 
+				}
+
 			}
 
-		  if (i == 1)			
-			itr.remove(); 	
-					  
-		}
-		
-		
-		for (SceneItem s1 : sceneItems)
-					if (s1.getClass() == Asteroid.class)
-				{
-				    s1.update(dim.width, dim.height);	
-					 repaint();
-				}
+		if (s1.getClass() == Asteroid.class && s1.getYCoord() > dim.height && !s1.isHidden())
+			i = 1;
+
+		if (i == 1){	
+			s1.hide();
+			numAsteroids--;
+		}		
+}
 
 	}
 
+
+for (SceneItem s1 : sceneItems)
+if (s1.getClass() == Asteroid.class)
+{
+s1.update(dim.width, dim.height);	
+
+}
+
+repaint();
+
+}
 
 	public void updateBullet()
 	{
@@ -411,64 +421,68 @@ public class Scene extends JPanel
 			
 
 	 for (SceneItem si : sceneItems) 
-		if (si.getClass() == Bullet.class && si.getXCoord() <= dim.width && si.getYCoord() <= dim.height)
+		if (si.getClass() == Bullet.class && si.getXCoord() <= dim.width && si.getYCoord() <= dim.height && bulletsMoving)
          return true; 
 		 return false; 
 	}
 
+
+
 }
 
 
-class Execute implements Runnable 
+class Execute implements Runnable
 {
-	Scene s1;
+Scene s1;
+char threadType;
 
-    public Execute(Scene s)
-	{
-	   s1 = s; 
-
-	}
-
-	synchronized public void run()
-	{
-
-			while (s1.movingAsteroids() || s1.movingBullet()) 
-			{  
-				try{
-
-					if (s1.movingAsteroids()){
-					  s1.updateAsteroids(); 
-					  Thread.sleep(100); 
-					  }
-
-					if (s1.movingBullet())
-					  s1.updateBullet(); 
-				   }
-
-	 			catch(InterruptedException e)
-				{
-				    System.out.println("interrupted exception");
-				}	
-				catch (ConcurrentModificationException e)
-				{
-				    System.out.println("concurrentModException");
-				}
-
-		    }
- 	   
-
-
-
-		  
-	}
-		
-		
-		
-		
+public Execute(Scene s, char thread)
+{
+s1 = s;
+threadType = thread;
 }
-	
+
+synchronized public void run()
+{
+
+while (s1.movingAsteroids() || s1.movingBullet())
+{
+try{
+
+synchronized(s1){
+
+if (s1.movingAsteroids() && threadType == 'a'){
+s1.updateAsteroids();
+Thread.sleep(100);
+}
+
+if (s1.movingBullet())	{
+s1.updateBullet();
+Thread.sleep(5);
+}	
+}
+
+}
+catch(InterruptedException e)
+{
+//System.out.println("interrupted exception");
+}	
+catch (ConcurrentModificationException e)
+{
+//System.out.println("concurrentModException");
+}
+
+}
+ 
 
 
 
+
+}
+
+
+
+
+}
 
 
