@@ -326,7 +326,11 @@ public int numAsteroids = 10;
 
 		int [] s = new int[sceneItems.size()];
 		int location = 0;
+
+		if (numAsteroids == 0)
+			asteroidsMoving = false; 
         
+
 		Iterator<SceneItem> itr = sceneItems.iterator();
 
 		synchronized(sceneItems)
@@ -426,7 +430,23 @@ repaint();
 		 return false; 
 	}
 
+    public void deleteSceneItems(){
+        
+		Iterator<SceneItem> itr = sceneItems.iterator();
 
+		while (itr.hasNext())
+		{
+		
+		   SceneItem s1 = itr.next(); 
+
+				if (s1.getClass() != Ship.class)
+		
+				itr.remove(); 
+			
+					  
+		}
+
+	}
 
 }
 
@@ -445,7 +465,7 @@ threadType = thread;
 synchronized public void run()
 {
 
-while (s1.movingAsteroids() || s1.movingBullet())
+while (s1.movingAsteroids())
 {
 try{
 
@@ -460,6 +480,8 @@ if (s1.movingBullet())	{
 s1.updateBullet();
 Thread.sleep(5);
 }	
+
+
 }
 
 }

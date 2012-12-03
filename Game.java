@@ -1,7 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -195,7 +194,7 @@ class SceneFrame  extends JFrame {
 				panel.updateShip('j');
 				panel.repaint();
 			} 
-			else if(e.getKeyChar() == ' ') {
+			else if(e.getKeyChar() == ' ' && panel.numAsteroids != 0) {
 			     panel.addSceneItems(1, "Bullet", -1);
 
 		} /*else if (e.getKeyChar() == 'n' && firstPlay) {
@@ -205,6 +204,7 @@ class SceneFrame  extends JFrame {
 			}*/
 
 			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0){
+				panel.deleteSceneItems(); 
 				panel.numAsteroids = 10 + 5 *panel.level;
 				panel.level = panel.level + 1;
 				panel.reset();
