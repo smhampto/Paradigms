@@ -49,16 +49,19 @@ class SceneFrame  extends JFrame {
     JMenuItem saveGame;
     JMenuItem instructions;
     private boolean firstPlay = true;
+    private boolean atMenu = true;
     
     public SceneFrame(int sleepDuration)
     {
+
+    statusLabel = new JLabel("Asteroids:     Lives:      ");
+        panel = new Scene(statusLabel);
+
         setTitle("The Game");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        
-        statusLabel = new JLabel("This is the menu");
-        panel = new Scene(statusLabel);
+
         
         menubar = new JMenuBar();
         add(menubar);
@@ -101,7 +104,16 @@ class SceneFrame  extends JFrame {
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
 		
-		
+		if(atMenu){
+            
+            HelpWindow helpy = new HelpWindow(SceneFrame.this);
+                helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+                helpy.setSize(1000, 1000);
+                helpy.setLocation(0, 0);
+                helpy.setVisible(true);
+                
+        }
+
 		addKeyListener(new MyKeyListener());
     
     }
@@ -131,7 +143,8 @@ class SceneFrame  extends JFrame {
 
     public class newGames implements ActionListener {
         public void actionPerformed(ActionEvent n) {
-        
+
+        atMenu = false;	
 		while(firstPlay) {
             panel.setRandomSeed(-1);
 			panel.numAsteroids = 10;
@@ -145,6 +158,7 @@ class SceneFrame  extends JFrame {
 
     public class loadGames implements ActionListener {
         public void actionPerformed(ActionEvent l) {
+            atMenu = false;
             panel.loadGame();
             panel.addLoadScene();
         }   
