@@ -368,7 +368,7 @@ if (s1.getClass() == Asteroid.class)
 s1.update(dim.width, dim.height);	
 
 }
-
+updateStatusBar();
 repaint();
 
 }
@@ -405,7 +405,7 @@ repaint();
 	//  [TODO: in CrashScene this should be overridden to give stats about the people in the scene.]
 	protected String getStatusBarText()
 	{
-		return "";
+		return "number of Asteroids: " + numAsteroids;
 	}
 		
 	public void updateStatusBar()
