@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Graphics;
@@ -43,10 +44,11 @@ public class Scene extends JPanel
     private String temp;
     private String spaceTemp;
 
-
+	private int score = 0; 
 	private int shipLocation;
-public int level = 1;
-public int numAsteroids = 10;
+	public int level = 1;
+	public int numLives = 3; 
+	public int numAsteroids = 10;
     
     //end new
 
@@ -259,7 +261,7 @@ public int numAsteroids = 10;
                 }
 
 				else if(type.equals("Ship")) {
-                    sceneItems.add(new Ship("ship3.jpg", (dim.width/2), dim.height-160, 100, 100, 20, 0));
+                    sceneItems.add(new Ship("ship3.jpg", (dim.width/2), dim.height-100, 100, 100, 20, 0));
                     for (int z = 0; z < sceneItems.size(); z++) {
                         if(sceneItems.get(z) instanceof Ship) {
                             shipLocation = z;
@@ -327,9 +329,19 @@ public int numAsteroids = 10;
 		int [] s = new int[sceneItems.size()];
 		int location = 0;
 
-		if (numAsteroids == 0)
-			asteroidsMoving = false; 
-        
+		if (numAsteroids == 0 || numLives == 0){
+			asteroidsMoving = false;
+			for (SceneItem si : sceneItems) {
+				if (si.getClass() == Ship.class)
+					si.setXStep(0);
+			} 
+
+			/*gameOverWindow over = new gameOverWindow(SceneFrame.this);
+            over.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+            over.setSize(300, 100);
+            over.setLocation(300, 300);
+            over.setVisible(true);*/
+        }
 
 		Iterator<SceneItem> itr = sceneItems.iterator();
 
@@ -346,12 +358,15 @@ public int numAsteroids = 10;
 				{
 					i = 1;
 					s2.hide();
+					score = score + level * 10; 
 				}
 
 			}
 
-		if (s1.getClass() == Asteroid.class && s1.getYCoord() > dim.height && !s1.isHidden())
+		if (s1.getClass() == Asteroid.class && s1.getYCoord() > dim.height && !s1.isHidden()){
 			i = 1;
+            numLives--; 
+			}
 
 		if (i == 1){	
 			s1.hide();
@@ -405,7 +420,7 @@ repaint();
 	//  [TODO: in CrashScene this should be overridden to give stats about the people in the scene.]
 	protected String getStatusBarText()
 	{
-		return "number of Asteroids: " + numAsteroids;
+		return "Asteroids: " + numAsteroids + "          lives: " + numLives + "          level: " + level + "          score: " + score;
 	}
 		
 	public void updateStatusBar()

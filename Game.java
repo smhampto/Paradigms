@@ -217,7 +217,7 @@ class SceneFrame  extends JFrame {
 				firstPlay = false; 
 			}*/
 
-			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0){
+			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0 && panel.level <= 10 && panel.numLives > 0){
 				panel.deleteSceneItems(); 
 				panel.numAsteroids = 10 + 5 *panel.level;
 				panel.level = panel.level + 1;

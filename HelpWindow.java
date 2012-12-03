@@ -10,7 +10,7 @@ public class HelpWindow extends JDialog {
         super(frame, "Instructions", true);
         setLayout(new FlowLayout());
         
-        background = new ImageIcon("Asteroids.png").getImage();
+        background = new ImageIcon("ship1.jpeg").getImage();
             setContentPane(new JPanel() { protected void paintComponent(Graphics g) { g.drawImage(background,0,0,getWidth(), getHeight(), this);}});
         label = new JLabel("These are the instructions");
         add(label);
