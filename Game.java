@@ -15,9 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
 import java.awt.Color;
-
 
 public class Game
 {
@@ -33,12 +31,11 @@ public class Game
         SceneFrame frame = new SceneFrame(sleepDuration);
         frame.setVisible(true);
         frame.createScene();
-    
     }
 }
 
-class SceneFrame  extends JFrame {
-    
+class SceneFrame  extends JFrame 
+{ 
     JLabel statusLabel;
     Scene panel;
     JMenuBar menubar;
@@ -47,22 +44,24 @@ class SceneFrame  extends JFrame {
     JMenuItem startNewGame;
     JMenuItem loadGame;
     JMenuItem saveGame;
+	JMenuItem resumeGame;
+	JMenuItem pauseGame;
     JMenuItem instructions;
+
     private boolean firstPlay = true;
     private boolean atMenu = true;
     
     public SceneFrame(int sleepDuration)
     {
 
-    statusLabel = new JLabel("Asteroids:     Lives:      ");
+   		statusLabel = new JLabel("Asteroids:     Lives:      ");
         panel = new Scene(statusLabel);
 
         setTitle("The Game");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
-        
+  
         menubar = new JMenuBar();
         add(menubar);
         newGame = new JMenu("Game");
@@ -73,6 +72,10 @@ class SceneFrame  extends JFrame {
         newGame.add(loadGame);
         saveGame = new JMenuItem("Save Game");
         newGame.add(saveGame);
+		pauseGame = new JMenuItem("Pause Game");
+		newGame.add(pauseGame);
+		resumeGame = new JMenuItem("Resume Game");
+		newGame.add(resumeGame);
         
         help = new JMenu("Help");
         menubar.add(help);
@@ -92,7 +95,13 @@ class SceneFrame  extends JFrame {
         saveGames s = new saveGames();
         saveGame.addActionListener(s);
 
-        
+		pauseGames p = new pauseGames();
+		pauseGame.addActionListener(p);
+
+		resumeGames r = new resumeGames();
+		resumeGame.addActionListener(r);
+
+    
         panel.setBackground(Color.black);
         add(panel, BorderLayout.CENTER);
         
@@ -103,17 +112,16 @@ class SceneFrame  extends JFrame {
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
-		
-		if(atMenu){
-            
+
+		if(atMenu)
+		{  
             HelpWindow helpy = new HelpWindow(SceneFrame.this);
                 helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
-                helpy.setSize(1000, 1000);
-                helpy.setLocation(0, 0);
-                helpy.setVisible(true);
-                
+                helpy.setSize(1280, 700);
+                helpy.setLocation(100, 100);
+                helpy.setVisible(true);      
         }
-
+        
 		addKeyListener(new MyKeyListener());
     
     }
@@ -124,119 +132,141 @@ class SceneFrame  extends JFrame {
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(ke);
     }
     
-    public class event implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-        
-        System.out.println("instruction");
-            
+    public class event implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent e) 
+		{
+
             HelpWindow helpy = new HelpWindow(SceneFrame.this);
             helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
             helpy.setSize(300, 100);
             helpy.setLocation(300, 300);
             helpy.setVisible(true);
-
-        
-        }
-        
+        }  
     }
 
-
-    public class newGames implements ActionListener {
-        public void actionPerformed(ActionEvent n) {
-
-        atMenu = false;	
-		while(firstPlay) {
-            panel.setRandomSeed(-1);
-			panel.numAsteroids = 10;
-			panel.reset();
-			firstPlay = false;
-		}
-        
-        }
-        
+    public class newGames implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent n) 
+		{
+        	atMenu = false;	
+			while(firstPlay) 
+			{
+           	 	panel.setRandomSeed(-1);
+				panel.numAsteroids = 10;
+				panel.reset();
+				firstPlay = false;
+			}
+        }   
     }
 
-    public class loadGames implements ActionListener {
-        public void actionPerformed(ActionEvent l) {
+    public class loadGames implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent l) 
+		{
             atMenu = false;
             panel.loadGame();
             panel.addLoadScene();
         }   
     }
     
-    public class saveGames implements ActionListener {
-        public void actionPerformed(ActionEvent s) {
-            
-            panel.saveGame();
-            //panel.addSaveScene();        
+    public class saveGames implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent s) 
+		{  
+            panel.saveGame();        
         }   
     }
 
-    
+	public class pauseGames implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent p) 
+		{ 
+            panel.pauseGame();          
+        }   
+    }
+
+	public class resumeGames implements ActionListener 
+	{
+        public void actionPerformed(ActionEvent r) 
+		{
+            panel.resumeGame();
+                 
+        }   
+    }
+
    private class MyKeyListener extends KeyAdapter
 	{
-	
 		@Override public void keyTyped(KeyEvent e)
 		{
-
-            if (e.getKeyChar() == 'i') {
+            if (e.getKeyChar() == 'i') 
+			{
 				HelpWindow helpy = new HelpWindow(SceneFrame.this);
                 helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
                 helpy.setSize(300, 100);
                 helpy.setLocation(300, 300);
                 helpy.setVisible(true);
 			} 
-			else if (e.getKeyChar() == 'l') {
+			else if (e.getKeyChar() == 'l') 
+			{
 				panel.updateShip('l');
 				panel.repaint();
 			}
-			else if(e.getKeyChar() == 'p') {
+			else if(e.getKeyChar() == 'p') 
+			{
 			     panel.pauseGame();
 			}
-			else if(e.getKeyChar() == 'r') {
+			else if(e.getKeyChar() == 'r') 
+			{
 				panel.resumeGame();
 			}
-			else if(e.getKeyChar() == 'i') {
-			 HelpWindow helpy = new HelpWindow(SceneFrame.this);
+			else if(e.getKeyChar() == 'i') 
+			{
+				HelpWindow helpy = new HelpWindow(SceneFrame.this);
                 helpy.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
                 helpy.setSize(300, 100);
                 helpy.setLocation(300, 300);
                 helpy.setVisible(true);
-			
 			} 
-			else if (e.getKeyChar() == 'j') {
+			else if (e.getKeyChar() == 'j') 	
+			{
 				panel.updateShip('j');
 				panel.repaint();
 			} 
-			else if(e.getKeyChar() == ' ' && panel.numAsteroids != 0) {
+			else if(e.getKeyChar() == ' ' && panel.numAsteroids != 0) 
+			{
 			     panel.addSceneItems(1, "Bullet", -1);
-
-		} /*else if (e.getKeyChar() == 'n' && firstPlay) {
-				panel.setRandomSeed(-1);
-				panel.reset();
-				firstPlay = false; 
-			}*/
-
-			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0 && panel.level <= 10 && panel.numLives > 0){
+			} 
+			else if (e.getKeyChar() == 'n' && panel.numAsteroids == 0 && panel.level <= 10 && panel.numLives > 0)
+			{
 				panel.deleteSceneItems(); 
 				panel.numAsteroids = 10 + 5 *panel.level;
 				panel.level = panel.level + 1;
 				panel.reset();
+			}			
+			else if(e.getKeyChar() =='o' && panel.gameOver) 
+			{
+				boolean winner = false;
+				if(panel.level > 10)
+					winner = true;
+
+                gameOverWindow over = new gameOverWindow(SceneFrame.this, panel.score, winner);
+                over.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);   
+                over.setSize(300, 100);
+                over.setLocation(300, 300);
+                over.setVisible(true);
+                firstPlay = true;
+                panel.numLives = 3;
 			}
-        
-        }
-        
+        }        
     }
     
-    public static void main(String args[]) {
-        
+    public static void main(String args[]) 
+	{        
         MainWindow helpy = new MainWindow();
         helpy.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         helpy.setSize(300, 100);
         helpy.setVisible(true);
         helpy.setTitle("Main Window");
-    
     }
-
-
 }

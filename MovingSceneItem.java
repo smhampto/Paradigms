@@ -16,22 +16,26 @@ public class MovingSceneItem extends SceneItem
 	}
 	
     @Override
-	public void setXStep(int xs) {
+	public void setXStep(int xs) 
+	{
 		xStep = xs;
 	}
 	
 	@Override
-	public void setYStep(int ys) {
+	public void setYStep(int ys) 
+	{
 	   yStep = ys;
 	} 
 	
 	@Override
-	public int getXStep() {
+	public int getXStep() 
+	{
 	   return xStep;
 	}
 	
 	@Override
-	public int getYStep() {
+	public int getYStep() 
+	{
 	   return yStep;
 	}
 	
@@ -54,12 +58,10 @@ public class MovingSceneItem extends SceneItem
 	       yCoord = 0;
 	   }    
 
-  
 	}
 
 	public void moveShip(int width, char direction)
 	{
-
 		if (direction == 'l' && (xCoord + getWidth() + xStep) < width)
             xCoord += xStep;
         else if(direction == 'l' && (xCoord + getWidth() + xStep) >= width)
@@ -70,6 +72,4 @@ public class MovingSceneItem extends SceneItem
             xCoord = width - getWidth();
 
 	}
-
-	
 }

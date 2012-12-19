@@ -3,7 +3,6 @@ import java.io.File;
 import java.awt.Image;
 import java.awt.Graphics;
 
-//  SceneItem is the base class for all objects which will be added to a scene.
 public class SceneItem
 {
 	private Image img;
@@ -32,14 +31,12 @@ public class SceneItem
 		}
 	}
 
-	//  update() is an empty function which will need to be overridden by the
-	//  MovingSceneItem class, but for basic items nothing needs to be done
+	//  update() is an empty function that will be overridden by the
+	//  MovingSceneItem class
 	public void update(int width, int height) {
 	
-
 	}
 	
-	//  Keyword "final" prevents this method from being overridden
 	public final void draw(Graphics g)
 	{
 		if (getImage() != null) {
@@ -71,7 +68,6 @@ public class SceneItem
 		}
 		return false;
 	}
-
 
 
 	public Image getImage() {
